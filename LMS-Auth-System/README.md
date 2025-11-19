@@ -107,14 +107,43 @@ Hamma servislar ishga tushgandan so'ng:
 
 4. Muvaffaqiyatli kirganingizdan keyin:
    - Sizning profil ma'lumotlaringiz ko'rinadi
-   - Admin panel ko'rinadi (admin role uchun)
+   - **"Open Admin Panel"** tugmasi ko'rinadi (admin role uchun)
    - User ma'lumotlari: username, email, roles
 
-5. **Logout qiling:**
+5. **Admin Panel Ishlatish:**
+   - "Open Admin Panel" tugmasini bosing
+   - User List ko'rinadi (barcha userlar)
+   - **"+ Create New User"** tugmasini bosing
+   - Formani to'ldiring:
+     - Username: `newuser`
+     - Email: `newuser@lms.local`
+     - First Name: `New`
+     - Last Name: `User`
+     - Password: `Password123!`
+     - Roles: `user`, `student` (checkbox)
+   - **"Create User"** bosing
+   - User yaratiladi va Keycloak ga avtomatik sinxronlanadi!
+   - User listda yangi user ko'rinadi
+
+6. **User ni Edit qiling:**
+   - User listdan "Edit" tugmasini bosing
+   - Ma'lumotlarni o'zgartiring
+   - Rolelarni o'zgartirish mumkin (add/remove)
+   - "Update User" bosing
+   - O'zgarishlar Keycloak ga avtomatik sync bo'ladi
+
+7. **Logout qiling:**
    - "Logout" tugmasini bosing
    - Keycloak login pagega qaytasiz
 
-6. **Oddiy user sifatida kirish:**
+8. **Yangi user sifatida kirish:**
+   - Username: `newuser`
+   - Password: `Password123!`
+   - Login tugmasini bosing
+   - User panel ko'rinadi (admin panel yo'q, chunki admin role yo'q)
+
+9. **Oddiy user sifatida kirish:**
+   - Logout qiling
    - Username: `testuser`
    - Password: `user123`
    - Login tugmasini bosing
