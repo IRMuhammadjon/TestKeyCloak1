@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "CdBBvklLwB6t/DOyvIqi0Zn0K5Z0MGzOVWAmbHBrsb8IK9kM5bX1J9WmJ86kljV141ryqe9imuo33wifHG6w8A==",
+  "success": true,
+  "projectFilePath": "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/services/LMS.AuthService/LMS.AuthService.csproj",
+  "expectedPackageFiles": [
+    "/home/dmdev2/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/swashbuckle.aspnetcore.swagger/6.6.2/swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.6.2/swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.6.2/swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512"
+  ],
+  "logs": []
+}

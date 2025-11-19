@@ -1,0 +1,12 @@
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/bin/Debug/net8.0/LMS.Shared.TokenValidation.deps.json
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/bin/Debug/net8.0/LMS.Shared.TokenValidation.dll
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/bin/Debug/net8.0/LMS.Shared.TokenValidation.pdb
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.csproj.AssemblyReference.cache
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.GeneratedMSBuildEditorConfig.editorconfig
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.AssemblyInfoInputs.cache
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.AssemblyInfo.cs
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.csproj.CoreCompileInputs.cache
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.dll
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/refint/LMS.Shared.TokenValidation.dll
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/LMS.Shared.TokenValidation.pdb
+/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/Debug/net8.0/ref/LMS.Shared.TokenValidation.dll

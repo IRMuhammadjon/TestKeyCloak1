@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/LMS.Shared.TokenValidation.csproj": {}
+  },
+  "projects": {
+    "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/LMS.Shared.TokenValidation.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/LMS.Shared.TokenValidation.csproj",
+        "projectName": "LMS.Shared.TokenValidation",
+        "projectPath": "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/LMS.Shared.TokenValidation.csproj",
+        "packagesPath": "/home/dmdev2/.nuget/packages/",
+        "outputPath": "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/dmdev2/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {},
+          "https://gitlab.com/api/v4/projects/71415935/packages/nuget/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "eqjINJpFRSUu7Rc3pYAWSGsj+/qVWVzgazfX/HF5/LfbtJgCMJLxRtat8WqYrbWvJZoexjUvoFZkRASQgWFLSQ==",
+  "success": true,
+  "projectFilePath": "/mnt/hdd/projects/muhammadjon/Test/LMS-Auth-System/shared/LMS.Shared.TokenValidation/LMS.Shared.TokenValidation.csproj",
+  "expectedPackageFiles": [
+    "/home/dmdev2/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.11/microsoft.aspnetcore.authentication.jwtbearer.8.0.11.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.abstractions/8.2.1/microsoft.identitymodel.abstractions.8.2.1.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.2.1/microsoft.identitymodel.jsonwebtokens.8.2.1.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.logging/8.2.1/microsoft.identitymodel.logging.8.2.1.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.protocols/7.1.2/microsoft.identitymodel.protocols.7.1.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/7.1.2/microsoft.identitymodel.protocols.openidconnect.7.1.2.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/microsoft.identitymodel.tokens/8.2.1/microsoft.identitymodel.tokens.8.2.1.nupkg.sha512",
+    "/home/dmdev2/.nuget/packages/system.identitymodel.tokens.jwt/8.2.1/system.identitymodel.tokens.jwt.8.2.1.nupkg.sha512"
+  ],
+  "logs": []
+}

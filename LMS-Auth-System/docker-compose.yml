@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Asosiy Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lms-postgres
+    environment:
+      POSTGRES_DB: lms_db
+      POSTGRES_USER: lms_user
+      POSTGRES_PASSWORD: lms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - lms-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lms_user -d lms_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Keycloak Server
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: lms-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/lms_db
+      KC_DB_USERNAME: lms_user
+      KC_DB_PASSWORD: lms_password
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - keycloak_data:/opt/keycloak/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - lms-network
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;grep 'HTTP/1.1 200 OK' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  # User Service
+  user-service:
+    build:
+      context: ./services/LMS.UserService
+      dockerfile: Dockerfile
+    container_name: lms-user-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=lms_db;Username=lms_user;Password=lms_password
+      Keycloak__AuthServerUrl: http://keycloak:8080
+      Keycloak__Realm: lms-realm
+      Keycloak__ClientId: lms-user-service
+      Keycloak__ClientSecret: lms-user-service-secret
+      Keycloak__AdminUsername: admin
+      Keycloak__AdminPassword: admin123
+    ports:
+      - "5001:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - lms-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./services/LMS.AuthService
+      dockerfile: Dockerfile
+    container_name: lms-auth-service
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Keycloak__AuthServerUrl: http://keycloak:8080
+      Keycloak__Realm: lms-realm
+      Keycloak__ClientId: lms-auth-service
+      Keycloak__ClientSecret: lms-auth-service-secret
+    ports:
+      - "5002:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - lms-network
+
+  # Frontend UI
+  frontend:
+    build:
+      context: ./frontend/lms-ui
+      dockerfile: Dockerfile
+    container_name: lms-frontend
+    environment:
+      REACT_APP_AUTH_SERVICE_URL: http://localhost:5002
+      REACT_APP_USER_SERVICE_URL: http://localhost:5001
+      REACT_APP_KEYCLOAK_URL: http://localhost:8080
+      REACT_APP_KEYCLOAK_REALM: lms-realm
+      REACT_APP_KEYCLOAK_CLIENT_ID: lms-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - user-service
+    networks:
+      - lms-network
+
+networks:
+  lms-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  keycloak_data:
