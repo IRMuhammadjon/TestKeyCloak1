@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import keycloak, { loginWithCredentials, refreshToken } from './keycloak';
+import { userApi } from './services/api';
 import AdminPanel from './components/AdminPanel';
 import LoginPage from './components/LoginPage';
 import './App.css';
@@ -10,6 +11,14 @@ interface UserInfo {
   firstName: string;
   lastName: string;
   roles: string[];
+  permissions?: Array<{
+    id: string;
+    name: string;
+    resource: string;
+    action: string;
+    description?: string;
+    source: string;
+  }>;
 }
 
 function App() {
@@ -112,6 +121,25 @@ function App() {
 
       if (keycloak.tokenParsed) {
         parseAndSetUserInfo(keycloak.tokenParsed);
+
+        // Fetch user's detailed info including permissions
+        try {
+          const currentUser = await userApi.getCurrentUser();
+          console.log('Current user data:', currentUser);
+
+          setUserInfo({
+            username: currentUser.username,
+            email: currentUser.email,
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            roles: currentUser.roles?.map((r: any) => r.name) || [],
+            permissions: currentUser.permissions || []
+          });
+        } catch (err) {
+          console.error('Failed to fetch user permissions:', err);
+          // Still set authenticated even if permissions fetch fails
+        }
+
         setAuthenticated(true);
       }
     } catch (error: any) {
@@ -192,6 +220,23 @@ function App() {
               <p><strong>Roles:</strong> <span className="roles-badge">{userInfo?.roles.join(', ')}</span></p>
             </div>
           </div>
+
+          {userInfo?.permissions && userInfo.permissions.length > 0 && (
+            <div className="permissions-card">
+              <h3>Your Permissions ({userInfo.permissions.length})</h3>
+              <div className="permissions-grid">
+                {userInfo.permissions.map((perm) => (
+                  <div key={perm.id} className="permission-badge">
+                    <div className="permission-name">{perm.name}</div>
+                    <div className="permission-resource">{perm.resource}:{perm.action}</div>
+                    <div className={`permission-source ${perm.source === 'direct' ? 'direct' : 'inherited'}`}>
+                      {perm.source === 'direct' ? 'Direct' : perm.source.replace('role:', 'From ')}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {isAdmin && (
             <div className="admin-section">

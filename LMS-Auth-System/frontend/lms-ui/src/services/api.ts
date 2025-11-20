@@ -45,6 +45,11 @@ apiClient.interceptors.response.use(
 );
 
 export const userApi = {
+  getCurrentUser: async (): Promise<any> => {
+    const response = await apiClient.get('/Users/me');
+    return response.data;
+  },
+
   getAll: async (): Promise<User[]> => {
     const response = await apiClient.get<User[]>('/Users');
     return response.data;

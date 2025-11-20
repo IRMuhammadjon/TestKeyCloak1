@@ -23,6 +23,73 @@ public class UsersController : ControllerBase
         _logger = logger;
     }
 
+    [HttpGet("me")]
+    [Authorize(Roles = "admin,user")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        // Get username from JWT token claims
+        var username = User.Identity?.Name ?? User.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value;
+
+        if (string.IsNullOrEmpty(username))
+            return Unauthorized(new { message = "User not authenticated" });
+
+        var user = await _context.Users
+            .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Username == username);
+
+        if (user == null)
+            return NotFound(new { message = "User not found in database" });
+
+        // Get user's permissions (direct + from roles)
+        var directPermissions = await _context.UserPermissions
+            .Where(up => up.UserId == user.Id)
+            .Include(up => up.Permission)
+            .Select(up => new
+            {
+                up.Permission.Id,
+                up.Permission.Name,
+                up.Permission.Resource,
+                up.Permission.Action,
+                up.Permission.Description,
+                Source = "direct"
+            })
+            .ToListAsync();
+
+        var rolePermissions = await _context.UserRoles
+            .Where(ur => ur.UserId == user.Id)
+            .Include(ur => ur.Role)
+            .ThenInclude(r => r.RolePermissions)
+            .ThenInclude(rp => rp.Permission)
+            .SelectMany(ur => ur.Role.RolePermissions.Select(rp => new
+            {
+                rp.Permission.Id,
+                rp.Permission.Name,
+                rp.Permission.Resource,
+                rp.Permission.Action,
+                rp.Permission.Description,
+                Source = $"role:{ur.Role.Name}"
+            }))
+            .ToListAsync();
+
+        var allPermissions = directPermissions.Concat(rolePermissions)
+            .GroupBy(p => p.Id)
+            .Select(g => g.First())
+            .ToList();
+
+        return Ok(new
+        {
+            user.Id,
+            user.Username,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.Phone,
+            user.IsActive,
+            Roles = user.UserRoles?.Select(ur => new { ur.Role.Id, ur.Role.Name }).ToList(),
+            Permissions = allPermissions
+        });
+    }
+
     [HttpGet]
     [Authorize(Roles = "admin,user")]
     public async Task<IActionResult> GetAll()
