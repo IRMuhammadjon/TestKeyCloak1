@@ -1,6 +1,6 @@
 import axios from 'axios';
 import keycloak from '../keycloak';
-import { User, CreateUserRequest, UpdateUserRequest, Role } from '../types';
+import { User, CreateUserRequest, UpdateUserRequest, Role, Permission, CreatePermissionRequest, UpdatePermissionRequest, UserPermissionsResponse } from '../types';
 
 const API_BASE_URL = 'http://localhost:5001/api';
 
@@ -81,6 +81,58 @@ export const userApi = {
 export const roleApi = {
   getAll: async (): Promise<Role[]> => {
     const response = await apiClient.get<Role[]>('/Roles');
+    return response.data;
+  },
+};
+
+export const permissionApi = {
+  getAll: async (): Promise<Permission[]> => {
+    const response = await apiClient.get<Permission[]>('/Permissions');
+    return response.data;
+  },
+
+  getById: async (id: string): Promise<Permission> => {
+    const response = await apiClient.get<Permission>(`/Permissions/${id}`);
+    return response.data;
+  },
+
+  create: async (data: CreatePermissionRequest): Promise<Permission> => {
+    const response = await apiClient.post<Permission>('/Permissions', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdatePermissionRequest): Promise<Permission> => {
+    const response = await apiClient.put<Permission>(`/Permissions/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/Permissions/${id}`);
+  },
+
+  assignToRole: async (permissionId: string, roleId: string): Promise<void> => {
+    await apiClient.post(`/Permissions/${permissionId}/roles/${roleId}`);
+  },
+
+  removeFromRole: async (permissionId: string, roleId: string): Promise<void> => {
+    await apiClient.delete(`/Permissions/${permissionId}/roles/${roleId}`);
+  },
+
+  assignToUser: async (permissionId: string, userId: string): Promise<void> => {
+    await apiClient.post(`/Permissions/${permissionId}/users/${userId}`);
+  },
+
+  removeFromUser: async (permissionId: string, userId: string): Promise<void> => {
+    await apiClient.delete(`/Permissions/${permissionId}/users/${userId}`);
+  },
+
+  getUserPermissions: async (userId: string): Promise<UserPermissionsResponse> => {
+    const response = await apiClient.get<UserPermissionsResponse>(`/Permissions/users/${userId}`);
+    return response.data;
+  },
+
+  getRolePermissions: async (roleId: string): Promise<{ roleId: string; roleName: string; permissions: Permission[] }> => {
+    const response = await apiClient.get(`/Permissions/roles/${roleId}`);
     return response.data;
   },
 };

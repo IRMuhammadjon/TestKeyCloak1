@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { userApi } from '../services/api';
 import { User } from '../types';
+import UserPermissions from './UserPermissions';
 import './UserList.css';
 
 interface UserListProps {
@@ -13,6 +14,7 @@ const UserList: React.FC<UserListProps> = ({ onEdit, onDelete, refresh }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -64,6 +66,9 @@ const UserList: React.FC<UserListProps> = ({ onEdit, onDelete, refresh }) => {
                 </span>
               </td>
               <td>
+                <button onClick={() => setSelectedUser(user)} className="btn-permissions">
+                  Permissions
+                </button>
                 <button onClick={() => onEdit(user)} className="btn-edit">
                   Edit
                 </button>
@@ -84,6 +89,14 @@ const UserList: React.FC<UserListProps> = ({ onEdit, onDelete, refresh }) => {
       </table>
       {users.length === 0 && (
         <p className="no-data">No users found</p>
+      )}
+
+      {selectedUser && (
+        <UserPermissions
+          userId={selectedUser.id}
+          username={selectedUser.username}
+          onClose={() => setSelectedUser(null)}
+        />
       )}
     </div>
   );

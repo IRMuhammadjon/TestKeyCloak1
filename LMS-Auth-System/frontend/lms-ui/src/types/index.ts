@@ -41,3 +41,56 @@ export interface UpdateUserRequest {
   phone?: string;
   isActive?: boolean;
 }
+
+export interface Permission {
+  id: string;
+  name: string;
+  resource: string;
+  action: string;
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface UserPermission {
+  id: string;
+  userId: string;
+  permissionId: string;
+  permission: Permission;
+  source?: string;
+}
+
+export interface RolePermission {
+  id: string;
+  roleId: string;
+  permissionId: string;
+  permission: Permission;
+}
+
+export interface CreatePermissionRequest {
+  name: string;
+  resource: string;
+  action: string;
+  description?: string;
+}
+
+export interface UpdatePermissionRequest {
+  name?: string;
+  resource?: string;
+  action?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export interface UserPermissionsResponse {
+  userId: string;
+  username: string;
+  permissions: Array<{
+    id: string;
+    name: string;
+    resource: string;
+    action: string;
+    description?: string;
+    source: string;
+  }>;
+}

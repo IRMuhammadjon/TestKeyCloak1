@@ -49,13 +49,24 @@
   color: #721c24;
 }
 
-.btn-edit, .btn-delete {
+.btn-permissions, .btn-edit, .btn-delete {
   padding: 6px 12px;
   margin-right: 8px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-permissions {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-permissions:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
 }
 
 .btn-edit {
@@ -65,6 +76,7 @@
 
 .btn-edit:hover {
   background: #0056b3;
+  transform: translateY(-1px);
 }
 
 .btn-delete {
@@ -74,6 +86,7 @@
 
 .btn-delete:hover {
   background: #c82333;
+  transform: translateY(-1px);
 }
 
 .loading, .error, .no-data {
