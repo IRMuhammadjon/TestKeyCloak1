@@ -18,31 +18,24 @@
   "accessCodeLifespan": 60,
   "accessCodeLifespanUserAction": 300,
   "accessCodeLifespanLogin": 1800,
+  "defaultRoles": ["user"],
   "roles": {
     "realm": [
       {
         "name": "admin",
-        "description": "Administrator role with full access",
-        "composite": false,
-        "clientRole": false
+        "description": "Administrator role with full access"
       },
       {
         "name": "user",
-        "description": "Standard user role",
-        "composite": false,
-        "clientRole": false
+        "description": "Standard user role"
       },
       {
         "name": "teacher",
-        "description": "Teacher role for LMS",
-        "composite": false,
-        "clientRole": false
+        "description": "Teacher role for LMS"
       },
       {
         "name": "student",
-        "description": "Student role for LMS",
-        "composite": false,
-        "clientRole": false
+        "description": "Student role for LMS"
       }
     ]
   },
@@ -52,135 +45,50 @@
       "name": "LMS Frontend Application",
       "enabled": true,
       "publicClient": true,
-      "redirectUris": [
-        "http://localhost:3000/*",
-        "http://localhost:3000"
-      ],
-      "webOrigins": [
-        "http://localhost:3000"
-      ],
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
       "protocol": "openid-connect",
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "attributes": {
-        "access.token.lifespan": "3600",
-        "pkce.code.challenge.method": "S256"
-      },
       "fullScopeAllowed": true,
+      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "email"],
+      "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"],
       "protocolMappers": [
         {
-          "name": "username",
+          "name": "Client ID",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-property-mapper",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
           "consentRequired": false,
           "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "username",
+            "user.session.note": "client_id",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "preferred_username",
+            "claim.name": "client_id",
             "jsonType.label": "String"
           }
         },
         {
-          "name": "email",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-property-mapper",
-          "consentRequired": false,
-          "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "email",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "email",
-            "jsonType.label": "String"
-          }
-        },
-        {
-          "name": "first_name",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-property-mapper",
-          "consentRequired": false,
-          "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "firstName",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "first_name",
-            "jsonType.label": "String"
-          }
-        },
-        {
-          "name": "last_name",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-property-mapper",
-          "consentRequired": false,
-          "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "lastName",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "last_name",
-            "jsonType.label": "String"
-          }
-        },
-        {
-          "name": "roles",
+          "name": "realm roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "consentRequired": false,
           "config": {
-            "userinfo.token.claim": "true",
+            "multivalued": "true",
+            "user.attribute": "foo",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "roles",
-            "jsonType.label": "String",
-            "multivalued": "true"
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String"
           }
+        },
+        {
+          "name": "audience resolve",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-resolve-mapper",
+          "consentRequired": false
         }
       ]
-    },
-    {
-      "clientId": "lms-user-service",
-      "name": "LMS User Service",
-      "enabled": true,
-      "publicClient": false,
-      "secret": "lms-user-service-secret",
-      "redirectUris": [
-        "*"
-      ],
-      "webOrigins": [
-        "*"
-      ],
-      "protocol": "openid-connect",
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
-      "fullScopeAllowed": true
-    },
-    {
-      "clientId": "lms-auth-service",
-      "name": "LMS Auth Service",
-      "enabled": true,
-      "publicClient": false,
-      "secret": "lms-auth-service-secret",
-      "redirectUris": [
-        "*"
-      ],
-      "webOrigins": [
-        "*"
-      ],
-      "protocol": "openid-connect",
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
-      "fullScopeAllowed": true
     }
   ],
   "users": [
@@ -198,13 +106,9 @@
           "temporary": false
         }
       ],
-      "realmRoles": [
-        "admin",
-        "user"
-      ],
+      "realmRoles": ["admin", "user"],
       "attributes": {
-        "phone": ["+998901234567"],
-        "position": ["System Administrator"]
+        "phone": ["+998901234567"]
       }
     },
     {
@@ -221,75 +125,10 @@
           "temporary": false
         }
       ],
-      "realmRoles": [
-        "user",
-        "student"
-      ],
+      "realmRoles": ["user", "student"],
       "attributes": {
-        "phone": ["+998901234568"],
-        "studentId": ["STU001"]
+        "phone": ["+998901234568"]
       }
     }
-  ],
-  "clientScopes": [
-    {
-      "name": "lms-profile",
-      "description": "LMS User Profile Information",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "true"
-      },
-      "protocolMappers": [
-        {
-          "name": "phone",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "phone",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "phone",
-            "jsonType.label": "String"
-          }
-        }
-      ]
-    }
-  ],
-  "scopeMappings": [],
-  "groups": [
-    {
-      "name": "Administrators",
-      "path": "/Administrators",
-      "realmRoles": ["admin"]
-    },
-    {
-      "name": "Teachers",
-      "path": "/Teachers",
-      "realmRoles": ["teacher", "user"]
-    },
-    {
-      "name": "Students",
-      "path": "/Students",
-      "realmRoles": ["student", "user"]
-    }
-  ],
-  "defaultRoles": [
-    "user"
-  ],
-  "requiredCredentials": [
-    "password"
-  ],
-  "otpPolicyType": "totp",
-  "otpPolicyAlgorithm": "HmacSHA1",
-  "otpPolicyInitialCounter": 0,
-  "otpPolicyDigits": 6,
-  "otpPolicyLookAheadWindow": 1,
-  "otpPolicyPeriod": 30,
-  "webAuthnPolicyRpEntityName": "lms-realm",
-  "attributes": {
-    "frontendUrl": "http://localhost:8080"
-  }
+  ]
 }
