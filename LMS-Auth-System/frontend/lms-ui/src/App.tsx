@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import keycloak, { loginWithCredentials } from './keycloak';
+import keycloak, { loginWithCredentials, refreshToken } from './keycloak';
 import AdminPanel from './components/AdminPanel';
 import LoginPage from './components/LoginPage';
 import './App.css';
@@ -43,12 +43,14 @@ function App() {
     setLoading(false);
 
     // Token refresh every 30 seconds
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (keycloak.authenticated && keycloak.token) {
-        keycloak.updateToken(30).catch(() => {
-          console.error('Failed to refresh token');
+        try {
+          await refreshToken();
+        } catch (error) {
+          console.error('Failed to refresh token:', error);
           handleLogout();
-        });
+        }
       }
     }, 30000);
 

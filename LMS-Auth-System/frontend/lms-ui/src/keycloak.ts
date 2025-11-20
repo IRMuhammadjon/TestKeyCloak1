@@ -81,4 +81,57 @@ export const loginWithCredentials = async (username: string, password: string): 
   }
 };
 
+// Manual token refresh function
+export const refreshToken = async (): Promise<void> => {
+  const keycloakUrl = process.env.REACT_APP_KEYCLOAK_URL || 'http://localhost:8080';
+  const realmName = process.env.REACT_APP_KEYCLOAK_REALM || 'lms-realm';
+  const clientId = process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'lms-frontend';
+
+  const tokenUrl = `${keycloakUrl}/realms/${realmName}/protocol/openid-connect/token`;
+
+  const currentRefreshToken = sessionStorage.getItem('kc_refreshToken');
+  if (!currentRefreshToken) {
+    throw new Error('No refresh token available');
+  }
+
+  const params = new URLSearchParams();
+  params.append('client_id', clientId);
+  params.append('grant_type', 'refresh_token');
+  params.append('refresh_token', currentRefreshToken);
+
+  try {
+    const response = await axios.post(tokenUrl, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    const { access_token, refresh_token } = response.data;
+
+    if (!access_token) {
+      throw new Error('No access token received');
+    }
+
+    // Update tokens
+    keycloak.token = access_token;
+    keycloak.refreshToken = refresh_token;
+    keycloak.authenticated = true;
+
+    // Parse token
+    const tokenParts = access_token.split('.');
+    if (tokenParts.length === 3) {
+      keycloak.tokenParsed = JSON.parse(atob(tokenParts[1]));
+    }
+
+    // Update session storage
+    sessionStorage.setItem('kc_token', access_token);
+    sessionStorage.setItem('kc_refreshToken', refresh_token);
+
+    console.log('Token refreshed successfully');
+  } catch (error: any) {
+    console.error('Token refresh error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default keycloak;
