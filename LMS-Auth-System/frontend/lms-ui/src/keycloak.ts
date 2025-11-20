@@ -10,15 +10,20 @@ const keycloak = new Keycloak({
 
 // Custom login function using Resource Owner Password Credentials flow
 export const loginWithCredentials = async (username: string, password: string): Promise<void> => {
-  const tokenUrl = `${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/token`;
+  // Use direct URLs since keycloak instance may not be initialized yet
+  const keycloakUrl = process.env.REACT_APP_KEYCLOAK_URL || 'http://localhost:8080';
+  const realmName = process.env.REACT_APP_KEYCLOAK_REALM || 'lms-realm';
+  const clientId = process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'lms-frontend';
+
+  const tokenUrl = `${keycloakUrl}/realms/${realmName}/protocol/openid-connect/token`;
 
   const params = new URLSearchParams();
-  params.append('client_id', keycloak.clientId!);
+  params.append('client_id', clientId);
   params.append('grant_type', 'password');
   params.append('username', username);
   params.append('password', password);
 
-  console.log('Login attempt:', { username, tokenUrl });
+  console.log('Login attempt:', { username, tokenUrl, clientId });
 
   try {
     const response = await axios.post(tokenUrl, params, {
