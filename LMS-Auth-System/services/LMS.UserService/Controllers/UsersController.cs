@@ -79,6 +79,7 @@ public class UsersController : ControllerBase
         user.LastName = request.LastName ?? user.LastName;
         user.Phone = request.Phone ?? user.Phone;
         user.IsActive = request.IsActive ?? user.IsActive;
+        user.UpdatedAt = DateTime.UtcNow;
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

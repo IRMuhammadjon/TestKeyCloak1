@@ -3,6 +3,9 @@ using LMS.UserService.Data;
 using LMS.UserService.Services;
 using Microsoft.EntityFrameworkCore;
 
+// Enable timestamp behavior for Npgsql (PostgreSQL)
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Database Configuration
