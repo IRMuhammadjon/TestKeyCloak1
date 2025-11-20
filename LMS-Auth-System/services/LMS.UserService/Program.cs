@@ -1,4 +1,3 @@
-using Keycloak.AuthServices.Sdk.Kiota;
 using LMS.Shared.TokenValidation;
 using LMS.UserService.Data;
 using LMS.UserService.Services;
@@ -13,8 +12,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Keycloak Authentication
 builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
-// Keycloak Admin Client
-builder.Services.AddKeycloakAdminHttpClient(builder.Configuration);
+// HttpClient for Keycloak API
+builder.Services.AddHttpClient();
 
 // Services
 builder.Services.AddScoped<KeycloakSyncService>();

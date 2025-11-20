@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     keycloak.init({ onLoad: 'login-required', checkLoginIframe: false })
-      .then(authenticated => {
+      .then((authenticated: boolean) => {
         setAuthenticated(authenticated);
         if (authenticated && keycloak.tokenParsed) {
           const token = keycloak.tokenParsed as any;

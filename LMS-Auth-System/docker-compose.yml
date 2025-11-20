@@ -61,8 +61,8 @@ services:
   # User Service
   user-service:
     build:
-      context: ./services/LMS.UserService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/LMS.UserService/Dockerfile
     container_name: lms-user-service
     environment:
       ASPNETCORE_ENVIRONMENT: Development
@@ -86,8 +86,8 @@ services:
   # Auth Service
   auth-service:
     build:
-      context: ./services/LMS.AuthService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/LMS.AuthService/Dockerfile
     container_name: lms-auth-service
     environment:
       ASPNETCORE_ENVIRONMENT: Development
