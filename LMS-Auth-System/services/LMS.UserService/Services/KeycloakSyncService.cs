@@ -213,7 +213,65 @@ public class KeycloakSyncService
         _dbContext.UserRoles.Add(userRole);
         await _dbContext.SaveChangesAsync();
 
-        _logger.LogInformation($"Role {role.Name} assigned to user {user.Username}");
+        _logger.LogInformation($"Role {role.Name} assigned to user {user.Username} in database");
+
+        // Sync role to Keycloak
+        if (!string.IsNullOrEmpty(user.KeycloakId))
+        {
+            await AssignRoleToUserInKeycloak(user.KeycloakId, role.Name);
+        }
+    }
+
+    private async Task AssignRoleToUserInKeycloak(string keycloakUserId, string roleName)
+    {
+        try
+        {
+            var token = await GetAdminToken();
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Get the role ID from Keycloak
+            var getRoleUrl = $"{_keycloakUrl}/admin/realms/{_realmName}/roles/{roleName}";
+            var roleResponse = await _httpClient.GetAsync(getRoleUrl);
+
+            if (!roleResponse.IsSuccessStatusCode)
+            {
+                _logger.LogError($"Role {roleName} not found in Keycloak");
+                return;
+            }
+
+            var keycloakRole = await roleResponse.Content.ReadFromJsonAsync<JsonElement>();
+            var roleId = keycloakRole.GetProperty("id").GetString();
+            var roleNameFromKeycloak = keycloakRole.GetProperty("name").GetString();
+
+            // Assign role to user
+            var assignRoleUrl = $"{_keycloakUrl}/admin/realms/{_realmName}/users/{keycloakUserId}/role-mappings/realm";
+            var roleMapping = new[]
+            {
+                new
+                {
+                    id = roleId,
+                    name = roleNameFromKeycloak
+                }
+            };
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(roleMapping), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(assignRoleUrl, jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation($"Role {roleName} assigned to user {keycloakUserId} in Keycloak");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError($"Failed to assign role {roleName} to user in Keycloak: {response.StatusCode} - {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error assigning role {roleName} to user in Keycloak");
+        }
     }
 
     public async Task RemoveRoleFromUser(Guid userId, Guid roleId)
@@ -229,6 +287,68 @@ public class KeycloakSyncService
         _dbContext.UserRoles.Remove(userRole);
         await _dbContext.SaveChangesAsync();
 
-        _logger.LogInformation($"Role {userRole.Role.Name} removed from user {userRole.User.Username}");
+        _logger.LogInformation($"Role {userRole.Role.Name} removed from user {userRole.User.Username} in database");
+
+        // Sync removal to Keycloak
+        if (!string.IsNullOrEmpty(userRole.User.KeycloakId))
+        {
+            await RemoveRoleFromUserInKeycloak(userRole.User.KeycloakId, userRole.Role.Name);
+        }
+    }
+
+    private async Task RemoveRoleFromUserInKeycloak(string keycloakUserId, string roleName)
+    {
+        try
+        {
+            var token = await GetAdminToken();
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Get the role ID from Keycloak
+            var getRoleUrl = $"{_keycloakUrl}/admin/realms/{_realmName}/roles/{roleName}";
+            var roleResponse = await _httpClient.GetAsync(getRoleUrl);
+
+            if (!roleResponse.IsSuccessStatusCode)
+            {
+                _logger.LogError($"Role {roleName} not found in Keycloak");
+                return;
+            }
+
+            var keycloakRole = await roleResponse.Content.ReadFromJsonAsync<JsonElement>();
+            var roleId = keycloakRole.GetProperty("id").GetString();
+            var roleNameFromKeycloak = keycloakRole.GetProperty("name").GetString();
+
+            // Remove role from user
+            var removeRoleUrl = $"{_keycloakUrl}/admin/realms/{_realmName}/users/{keycloakUserId}/role-mappings/realm";
+            var roleMapping = new[]
+            {
+                new
+                {
+                    id = roleId,
+                    name = roleNameFromKeycloak
+                }
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, removeRoleUrl)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(roleMapping), Encoding.UTF8, "application/json")
+            };
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation($"Role {roleName} removed from user {keycloakUserId} in Keycloak");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError($"Failed to remove role {roleName} from user in Keycloak: {response.StatusCode} - {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error removing role {roleName} from user in Keycloak");
+        }
     }
 }
