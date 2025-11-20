@@ -23,17 +23,49 @@ function App() {
         setAuthenticated(authenticated);
         if (authenticated && keycloak.tokenParsed) {
           const token = keycloak.tokenParsed as any;
+
+          // Debug: Log token to see structure
+          console.log('Keycloak Token:', token);
+          console.log('Realm Access:', token.realm_access);
+          console.log('Resource Access:', token.resource_access);
+
+          // Get roles from realm_access or resource_access
+          let roles: string[] = [];
+          if (token.realm_access?.roles) {
+            roles = token.realm_access.roles;
+          } else if (token.resource_access) {
+            // Fallback to resource_access if realm_access is not available
+            Object.values(token.resource_access).forEach((resource: any) => {
+              if (resource.roles) {
+                roles = [...roles, ...resource.roles];
+              }
+            });
+          }
+
+          // Filter out default Keycloak roles
+          roles = roles.filter(role =>
+            !role.startsWith('default-roles-') &&
+            !role.startsWith('offline_access') &&
+            !role.startsWith('uma_authorization')
+          );
+
           setUserInfo({
             username: token.preferred_username || '',
             email: token.email || '',
-            firstName: token.first_name || token.given_name || '',
-            lastName: token.last_name || token.family_name || '',
-            roles: token.realm_access?.roles || []
+            firstName: token.first_name || token.given_name || token.name?.split(' ')[0] || '',
+            lastName: token.last_name || token.family_name || token.name?.split(' ')[1] || '',
+            roles: roles
+          });
+
+          console.log('Parsed User Info:', {
+            username: token.preferred_username,
+            roles: roles
           });
         }
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error: any) => {
+        console.error('Keycloak init error:', error);
         setLoading(false);
       });
 

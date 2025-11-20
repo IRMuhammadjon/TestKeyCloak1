@@ -6,7 +6,8 @@
       "Bash(dotnet add:*)",
       "Bash(dotnet build:*)",
       "Bash(npx --yes create-react-app . --template typescript)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
