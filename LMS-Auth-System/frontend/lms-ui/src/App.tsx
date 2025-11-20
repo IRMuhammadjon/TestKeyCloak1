@@ -72,12 +72,20 @@ function App() {
       });
     }
 
-    // Filter out default Keycloak roles
-    roles = roles.filter(role =>
-      !role.startsWith('default-roles-') &&
-      role !== 'offline_access' &&
-      role !== 'uma_authorization'
-    );
+    console.log('All roles before filter:', roles);
+
+    // Filter out default Keycloak internal roles
+    roles = roles.filter(role => {
+      const isKeycloakInternal =
+        role.startsWith('default-roles-') ||
+        role === 'offline_access' ||
+        role === 'uma_authorization';
+
+      console.log(`Role "${role}": ${isKeycloakInternal ? 'FILTERED OUT' : 'KEPT'}`);
+      return !isKeycloakInternal;
+    });
+
+    console.log('Filtered roles:', roles);
 
     setUserInfo({
       username: token.preferred_username || '',
